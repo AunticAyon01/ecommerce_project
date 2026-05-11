@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}All Orders - ShopBD{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">All Orders (Admin)</div>
+</div>
+<div class="table-container">
+  <table>
+    <thead>
+      <tr><th>ID</th><th>User</th><th>Product</th><th>Qty</th><th>Total</th><th>Date</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+      <tr>
+        <td>#{{ order.pk }}</td>
+        <td>{{ order.user.username }}</td>
+        <td>{{ order.product.product_name }}</td>
+        <td>{{ order.quantity }}</td>
+        <td>৳{{ order.total_price }}</td>
+        <td>{{ order.order_date|date:"M d, Y" }}</td>
+        <td><span class="badge badge-{{ order.status|lower }}">{{ order.status }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

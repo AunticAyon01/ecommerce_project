@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Product - ShopBD{% endblock %}
+{% block content %}
+<div class="mb-2"><a href="{% url 'product_list' %}" style="color:var(--secondary);">← Back to Products</a></div>
+
+<div class="form-container" style="max-width:680px;">
+  <h1 class="form-title">{{ action }} Product</h1>
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}<div style="color:var(--secondary); font-size:0.8rem; margin-top:0.25rem;">{{ field.help_text }}</div>{% endif %}
+        {% if field.errors %}
+          {% for error in field.errors %}
+            <div class="form-error">{{ error }}</div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    {% endfor %}
+    {% if product and product.image %}
+      <div class="form-group">
+        <label>Current Image</label>
+        <img src="{{ product.image.url }}" style="max-width:200px; border-radius:var(--radius); display:block;">
+      </div>
+    {% endif %}
+    <div class="flex gap-1" style="margin-top:1rem;">
+      <button type="submit" class="btn btn-primary" style="flex:1; padding:0.75rem;">
+        {% if action == 'Add' %}Add Product{% else %}Save Changes{% endif %}
+      </button>
+      <a href="{% url 'product_list' %}" class="btn btn-secondary" style="flex:1; padding:0.75rem; text-align:center;">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

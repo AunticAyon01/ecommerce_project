@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Order #{{ order.pk }} - ShopBD{% endblock %}
+{% block content %}
+<div class="mb-2"><a href="{% url 'order_history' %}" style="color:var(--secondary);">← Back to Orders</a></div>
+
+<div class="page-header">
+  <div>
+    <div class="page-title">Order #{{ order.pk }}</div>
+    <div class="page-subtitle">Placed on {{ order.order_date|date:"F d, Y H:i" }}</div>
+  </div>
+  <span class="badge badge-{{ order.status|lower }}" style="font-size:1rem; padding:0.5rem 1rem;">{{ order.status }}</span>
+</div>
+
+<div class="grid-2" style="align-items:start;">
+  <div class="card">
+    <div class="card-header">Order Details</div>
+    <div class="card-body">
+      <div class="flex justify-between mb-1">
+        <span style="color:var(--secondary);">Product</span>
+        <strong><a href="{% url 'product_detail' order.product.pk %}">{{ order.product.product_name }}</a></strong>
+      </div>
+      <div class="flex justify-between mb-1">
+        <span style="color:var(--secondary);">Unit Price</span>
+        <strong>৳{{ order.product.price }}</strong>
+      </div>
+      <div class="flex justify-between mb-1">
+        <span style="color:var(--secondary);">Quantity</span>
+        <strong>{{ order.quantity }}</strong>
+      </div>
+      <div class="divider"></div>
+      <div class="flex justify-between">
+        <span style="font-weight:700;">Total Amount</span>
+        <strong style="font-size:1.25rem; color:var(--primary);">৳{{ order.total_price }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Payment Info</div>
+    <div class="card-body">
+      {% if order.payment %}
+        <div class="flex justify-between mb-1">
+          <span style="color:var(--secondary);">Method</span>
+          <strong>{{ order.payment.payment_method }}</strong>
+        </div>
+        <div class="flex justify-between mb-1">
+          <span style="color:var(--secondary);">Amount Paid</span>
+          <strong>৳{{ order.payment.amount }}</strong>
+        </div>
+        <div class="flex justify-between mb-1">
+          <span style="color:var(--secondary);">Status</span>
+          <span class="badge badge-{{ order.payment.payment_status|lower }}">{{ order.payment.payment_status }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span style="color:var(--secondary);">Date</span>
+          <strong>{{ order.payment.payment_date|date:"M d, Y" }}</strong>
+        </div>
+      {% else %}
+        <p style="color:var(--secondary);">No payment made yet.</p>
+        {% if order.status != 'Cancelled' %}
+          <a href="{% url 'payment_create' order.pk %}" class="btn btn-primary mt-2" style="width:100%; text-align:center;">💳 Pay Now</a>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% if order.status in 'Pending Processing' %}
+<div class="mt-2">
+  <a href="{% url 'cancel_order' order.pk %}" class="btn btn-danger">Cancel Order</a>
+</div>
+{% endif %}
+{% endblock %}

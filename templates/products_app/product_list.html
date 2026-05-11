@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Products - ShopBD{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="page-title">Products</div>
+    <div class="page-subtitle">{{ products|length }} product(s) found</div>
+  </div>
+  {% if user.is_staff %}
+    <a href="{% url 'product_add' %}" class="btn btn-primary">+ Add Product</a>
+  {% endif %}
+</div>
+
+<form method="get" class="search-bar">
+  <input type="text" name="q" value="{{ query }}" placeholder="Search products...">
+  <select name="category">
+    <option value="">All Categories</option>
+    {% for cat in categories %}
+      <option value="{{ cat.pk }}" {% if selected_category == cat.pk|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="btn btn-primary">Search</button>
+  {% if query or selected_category %}
+    <a href="{% url 'product_list' %}" class="btn btn-secondary">Clear</a>
+  {% endif %}
+</form>
+
+{% if products %}
+<div class="grid-4">
+  {% for product in products %}
+  <div class="product-card">
+    {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-img">
+    {% else %}
+      <div class="product-img-placeholder">🛍️</div>
+    {% endif %}
+    <div class="product-body">
+      <div class="product-name">{{ product.product_name }}</div>
+      {% if product.category %}<div style="font-size:0.75rem; color:var(--secondary); margin-bottom:0.5rem;">{{ product.category.name }}</div>{% endif %}
+      <div class="product-desc">{{ product.description|truncatewords:12 }}</div>
+      <div class="product-price">৳{{ product.price }}</div>
+      <div class="product-stock {% if product.is_in_stock %}in-stock{% else %}out-of-stock{% endif %}">
+        {% if product.is_in_stock %}✓ In Stock ({{ product.stock }}){% else %}✗ Out of Stock{% endif %}
+      </div>
+      {% if product.average_rating > 0 %}
+        <div class="stars mt-1" style="font-size:0.85rem;">
+          {% for i in "12345" %}{% if forloop.counter <= product.average_rating %}★{% else %}<span class="star-empty">★</span>{% endif %}{% endfor %}
+          <span style="color:var(--secondary); font-size:0.8rem;">({{ product.average_rating }})</span>
+        </div>
+      {% endif %}
+    </div>
+    <div class="product-footer">
+      <a href="{% url 'product_detail' product.pk %}" class="btn btn-primary btn-sm" style="flex:1;">View</a>
+      {% if user.is_authenticated and product.is_in_stock %}
+        <a href="{% url 'create_order' product.pk %}" class="btn btn-success btn-sm" style="flex:1;">Order</a>
+      {% endif %}
+      {% if user.is_staff %}
+        <a href="{% url 'product_edit' product.pk %}" class="btn btn-warning btn-sm">Edit</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-state-icon">🔍</div>
+  <h3>No products found</h3>
+  <p>Try a different search or <a href="{% url 'product_list' %}">view all products</a>.</p>
+</div>
+{% endif %}
+{% endblock %}

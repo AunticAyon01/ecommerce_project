@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Place Order - ShopBD{% endblock %}
+{% block content %}
+<div class="mb-2"><a href="{% url 'product_detail' product.pk %}" style="color:var(--secondary);">← Back to Product</a></div>
+
+<div class="grid-2" style="align-items:start;">
+  <!-- Order Summary -->
+  <div class="card">
+    <div class="card-header">📦 Order Summary</div>
+    <div class="card-body">
+      {% if product.image %}
+        <img src="{{ product.image.url }}" style="width:100%; max-height:200px; object-fit:cover; border-radius:var(--radius); margin-bottom:1rem;">
+      {% else %}
+        <div class="product-img-placeholder" style="height:150px; border-radius:var(--radius); margin-bottom:1rem;">🛍️</div>
+      {% endif %}
+      <h2 style="font-size:1.25rem; font-weight:700; margin-bottom:0.5rem;">{{ product.product_name }}</h2>
+      <p style="color:var(--secondary); font-size:0.875rem; margin-bottom:1rem;">{{ product.description|truncatewords:20 }}</p>
+      <div class="divider"></div>
+      <div class="flex justify-between mt-1">
+        <span style="color:var(--secondary);">Unit Price</span>
+        <strong>৳{{ product.price }}</strong>
+      </div>
+      <div class="flex justify-between mt-1">
+        <span style="color:var(--secondary);">Available Stock</span>
+        <strong class="in-stock">{{ product.stock }} units</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Form -->
+  <div class="form-container" style="margin:0;">
+    <h2 class="form-title">Place Your Order</h2>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <div class="form-group">
+        <label>Delivery Address</label>
+        <input type="text" value="{{ user.profile.address|default:'' }}" placeholder="Enter delivery address" name="address">
+      </div>
+      {% for field in form %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            {% for error in field.errors %}
+              <div class="form-error">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+      {% endfor %}
+      <div class="card" style="background:var(--primary-light); box-shadow:none; margin-bottom:1.25rem;">
+        <div class="card-body" style="padding:1rem;">
+          <div class="flex justify-between">
+            <span>Unit Price:</span><strong>৳{{ product.price }}</strong>
+          </div>
+          <div class="flex justify-between mt-1">
+            <span>Estimated Total:</span><strong style="color:var(--primary); font-size:1.1rem;">৳{{ product.price }} × qty</strong>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success" style="width:100%; padding:0.875rem; font-size:1rem;">
+        🛒 Confirm Order
+      </button>
+      <a href="{% url 'product_detail' product.pk %}" class="btn btn-secondary" style="width:100%; padding:0.75rem; text-align:center; margin-top:0.5rem; display:block;">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

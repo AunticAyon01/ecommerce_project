@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Delete Product - ShopBD{% endblock %}
+{% block content %}
+<div class="form-container">
+  <h1 class="form-title" style="color:var(--danger);">Delete Product</h1>
+  <div class="alert alert-error">
+    Are you sure you want to delete <strong>"{{ product.product_name }}"</strong>? This action cannot be undone.
+  </div>
+  {% if product.image %}
+    <img src="{{ product.image.url }}" style="max-width:200px; border-radius:var(--radius); margin-bottom:1rem; display:block;">
+  {% endif %}
+  <p style="color:var(--secondary); margin-bottom:1.5rem;">Price: ৳{{ product.price }} | Stock: {{ product.stock }}</p>
+  <form method="post">
+    {% csrf_token %}
+    <div class="flex gap-1">
+      <button type="submit" class="btn btn-danger" style="flex:1; padding:0.75rem;">Yes, Delete</button>
+      <a href="{% url 'product_detail' product.pk %}" class="btn btn-secondary" style="flex:1; padding:0.75rem; text-align:center;">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

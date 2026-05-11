@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}Budget Dashboard - ShopBD{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="page-title">📊 Budget Dashboard</div>
+    <div class="page-subtitle">Admin Financial Overview</div>
+  </div>
+  <a href="{% url 'budget_add' %}" class="btn btn-primary">+ Add Budget Record</a>
+</div>
+
+<!-- Stats Row -->
+<div class="stats-grid mb-3">
+  <div class="stat-card">
+    <div class="stat-icon">📦</div>
+    <div class="stat-value">{{ total_orders }}</div>
+    <div class="stat-label">Total Orders</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">✅</div>
+    <div class="stat-value">{{ delivered_orders }}</div>
+    <div class="stat-label">Delivered</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">⏳</div>
+    <div class="stat-value">{{ pending_orders }}</div>
+    <div class="stat-label">Pending</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">💰</div>
+    <div class="stat-value">৳{{ total_revenue }}</div>
+    <div class="stat-label">Total Revenue</div>
+  </div>
+</div>
+
+<!-- Budget Summary Cards -->
+<div class="grid-3 mb-3">
+  <div class="card" style="border-top:4px solid var(--success);">
+    <div class="card-body text-center">
+      <div style="color:var(--secondary); font-size:0.875rem; margin-bottom:0.5rem;">Total Income</div>
+      <div style="font-size:2rem; font-weight:800; color:var(--success);">৳{{ total_income }}</div>
+    </div>
+  </div>
+  <div class="card" style="border-top:4px solid var(--danger);">
+    <div class="card-body text-center">
+      <div style="color:var(--secondary); font-size:0.875rem; margin-bottom:0.5rem;">Total Expense</div>
+      <div style="font-size:2rem; font-weight:800; color:var(--danger);">৳{{ total_expense }}</div>
+    </div>
+  </div>
+  <div class="card" style="border-top:4px solid var(--primary);">
+    <div class="card-body text-center">
+      <div style="color:var(--secondary); font-size:0.875rem; margin-bottom:0.5rem;">Net Profit</div>
+      <div style="font-size:2rem; font-weight:800; color:{% if total_profit >= 0 %}var(--primary){% else %}var(--danger){% endif %};">
+        {% if total_profit >= 0 %}+{% endif %}৳{{ total_profit }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Monthly Records Table -->
+<div class="section-title">Monthly Budget Records</div>
+{% if budgets %}
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Month</th>
+        <th>Year</th>
+        <th>Income</th>
+        <th>Expense</th>
+        <th>Profit / Loss</th>
+        <th>Notes</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for budget in budgets %}
+      <tr>
+        <td><strong>{{ budget.get_month_display }}</strong></td>
+        <td>{{ budget.year }}</td>
+        <td style="color:var(--success); font-weight:600;">৳{{ budget.total_income }}</td>
+        <td style="color:var(--danger); font-weight:600;">৳{{ budget.total_expense }}</td>
+        <td>
+          <strong style="color:{% if budget.profit >= 0 %}var(--success){% else %}var(--danger){% endif %};">
+            {% if budget.profit >= 0 %}+{% endif %}৳{{ budget.profit }}
+          </strong>
+        </td>
+        <td style="color:var(--secondary); font-size:0.85rem;">{{ budget.notes|truncatewords:10|default:"—" }}</td>
+        <td>
+          <div class="flex gap-1">
+            <a href="{% url 'budget_edit' budget.pk %}" class="btn btn-warning btn-sm">Edit</a>
+            <a href="{% url 'budget_delete' budget.pk %}" class="btn btn-danger btn-sm">Delete</a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-state-icon">📊</div>
+  <h3>No budget records yet</h3>
+  <p>Add your first monthly budget record to get started.</p>
+  <a href="{% url 'budget_add' %}" class="btn btn-primary mt-2">+ Add Record</a>
+</div>
+{% endif %}
+
+<!-- Also show all orders here -->
+<div class="section-title mt-3">Recent Orders Overview</div>
+<a href="{% url 'all_orders' %}" class="btn btn-outline mb-2">View All Orders →</a>
+{% endblock %}

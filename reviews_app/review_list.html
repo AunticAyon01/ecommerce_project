@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Reviews for {{ product.product_name }}{% endblock %}
+{% block content %}
+<div class="mb-2"><a href="{% url 'product_detail' product.pk %}" style="color:var(--secondary);">← Back to Product</a></div>
+<div class="page-header">
+  <div class="page-title">Reviews for {{ product.product_name }}</div>
+  {% if user.is_authenticated %}
+    <a href="{% url 'add_review' product.pk %}" class="btn btn-primary">+ Write Review</a>
+  {% endif %}
+</div>
+{% for review in reviews %}
+<div class="review-card">
+  <div class="review-header">
+    <div>
+      <div class="reviewer-name">{{ review.user.get_full_name|default:review.user.username }}</div>
+      <div class="stars">{% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}<span class="star-empty">★</span>{% endif %}{% endfor %}</div>
+    </div>
+    <div class="review-date">{{ review.review_date|date:"M d, Y" }}</div>
+  </div>
+  <p style="color:var(--secondary);">{{ review.comment }}</p>
+</div>
+{% empty %}
+<div class="empty-state"><div class="empty-state-icon">💬</div><p>No reviews yet.</p></div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Delete Budget Record{% endblock %}
+{% block content %}
+<div class="form-container">
+  <h1 class="form-title" style="color:var(--danger);">Delete Budget Record</h1>
+  <div class="alert alert-error">Are you sure you want to delete <strong>{{ budget }}</strong>?</div>
+  <div class="card mb-2">
+    <div class="card-body">
+      <p><strong>Income:</strong> ৳{{ budget.total_income }}</p>
+      <p class="mt-1"><strong>Expense:</strong> ৳{{ budget.total_expense }}</p>
+      <p class="mt-1"><strong>Profit:</strong> ৳{{ budget.profit }}</p>
+    </div>
+  </div>
+  <form method="post">
+    {% csrf_token %}
+    <div class="flex gap-1">
+      <button type="submit" class="btn btn-danger" style="flex:1; padding:0.75rem;">Delete</button>
+      <a href="{% url 'budget_dashboard' %}" class="btn btn-secondary" style="flex:1; padding:0.75rem; text-align:center;">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

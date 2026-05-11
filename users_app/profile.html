@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}My Profile - ShopBD{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="page-title">My Profile</div>
+    <div class="page-subtitle">Manage your account information</div>
+  </div>
+  <div class="flex gap-1">
+    <a href="{% url 'order_history' %}" class="btn btn-secondary">My Orders</a>
+    <a href="{% url 'payment_history' %}" class="btn btn-secondary">My Payments</a>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="form-container" style="margin:0;">
+    <h3 class="section-title">Edit Profile</h3>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            {% for error in field.errors %}
+              <div class="form-error">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary" style="width:100%;">Save Changes</button>
+    </form>
+  </div>
+
+  <div>
+    <div class="card mb-2">
+      <div class="card-header">Account Info</div>
+      <div class="card-body">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p class="mt-1"><strong>Email:</strong> {{ user.email }}</p>
+        <p class="mt-1"><strong>Name:</strong> {{ user.get_full_name|default:"Not set" }}</p>
+        <p class="mt-1"><strong>Phone:</strong> {{ profile.phone|default:"Not set" }}</p>
+        <p class="mt-1"><strong>Address:</strong> {{ profile.address|default:"Not set" }}</p>
+        <p class="mt-1"><strong>Member since:</strong> {{ user.date_joined|date:"M d, Y" }}</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">Quick Links</div>
+      <div class="card-body">
+        <div class="flex gap-1" style="flex-direction:column;">
+          <a href="{% url 'order_history' %}" class="btn btn-outline">🛒 View My Orders</a>
+          <a href="{% url 'payment_history' %}" class="btn btn-outline">💳 Payment History</a>
+          <a href="{% url 'product_list' %}" class="btn btn-outline">📦 Browse Products</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

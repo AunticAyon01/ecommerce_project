@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}{% if edit %}Edit{% else %}Write{% endif %} Review - ShopBD{% endblock %}
+{% block content %}
+<div class="mb-2"><a href="{% url 'product_detail' product.pk %}" style="color:var(--secondary);">← Back to {{ product.product_name }}</a></div>
+
+<div class="form-container">
+  <h1 class="form-title">{% if edit %}Edit{% else %}Write a{% endif %} Review</h1>
+  <div class="card mb-2" style="box-shadow:none; border:1px solid var(--border);">
+    <div class="card-body" style="padding:1rem;">
+      <strong>{{ product.product_name }}</strong>
+      <span style="color:var(--secondary);"> — ৳{{ product.price }}</span>
+    </div>
+  </div>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}{% for error in field.errors %}<div class="form-error">{{ error }}</div>{% endfor %}{% endif %}
+      </div>
+    {% endfor %}
+    <div class="flex gap-1 mt-2">
+      <button type="submit" class="btn btn-primary" style="flex:1; padding:0.75rem;">
+        {% if edit %}Update Review{% else %}Submit Review{% endif %}
+      </button>
+      <a href="{% url 'product_detail' product.pk %}" class="btn btn-secondary" style="flex:1; padding:0.75rem; text-align:center;">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

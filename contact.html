@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Contact - ShopBD{% endblock %}
+{% block content %}
+<div class="form-container">
+  <h1 class="form-title">Contact Us</h1>
+  <div class="stat-card mb-2" style="text-align:left;">
+    <p><strong>📧 Email:</strong> support@shopbd.com</p>
+    <p class="mt-1"><strong>📞 Phone:</strong> +880 1700-000000</p>
+    <p class="mt-1"><strong>📍 Address:</strong> Dhaka, Bangladesh</p>
+    <p class="mt-1"><strong>🕐 Hours:</strong> Sat–Thu, 9 AM – 6 PM</p>
+  </div>
+  <div class="divider"></div>
+  <h3 class="section-title">Send a Message</h3>
+  <div class="form-group">
+    <label>Your Name</label>
+    <input type="text" placeholder="Enter your name">
+  </div>
+  <div class="form-group">
+    <label>Email Address</label>
+    <input type="email" placeholder="Enter your email">
+  </div>
+  <div class="form-group">
+    <label>Message</label>
+    <textarea rows="5" placeholder="Write your message..."></textarea>
+  </div>
+  <button class="btn btn-primary" style="width:100%;">Send Message</button>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Payment History - ShopBD{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="page-title">Payment History</div>
+    <div class="page-subtitle">{{ payments|length }} payment(s) total</div>
+  </div>
+</div>
+
+{% if payments %}
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Payment ID</th>
+        <th>Order</th>
+        <th>Product</th>
+        <th>Method</th>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for payment in payments %}
+      <tr>
+        <td><strong>#{{ payment.pk }}</strong></td>
+        <td><a href="{% url 'order_detail' payment.order.pk %}">#{{ payment.order.pk }}</a></td>
+        <td>{{ payment.order.product.product_name }}</td>
+        <td>{{ payment.payment_method }}</td>
+        <td><strong>৳{{ payment.amount }}</strong></td>
+        <td>{{ payment.payment_date|date:"M d, Y" }}</td>
+        <td><span class="badge badge-{{ payment.payment_status|lower }}">{{ payment.payment_status }}</span></td>
+        <td><a href="{% url 'payment_detail' payment.pk %}" class="btn btn-secondary btn-sm">View</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-state-icon">💳</div>
+  <h3>No payments yet</h3>
+  <p>Place an order and complete your first payment!</p>
+  <a href="{% url 'product_list' %}" class="btn btn-primary mt-2">Browse Products</a>
+</div>
+{% endif %}
+{% endblock %}

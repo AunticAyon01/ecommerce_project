@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}ShopBD - Home{% endblock %}
+
+{% block content %}
+<div class="hero">
+  <h1>🛍️ Welcome to ShopBD</h1>
+  <p>Your one-stop shop for everything you need. Quality products, great prices.</p>
+  <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+    <a href="{% url 'product_list' %}" class="btn btn-white btn-lg">Browse Products</a>
+    {% if not user.is_authenticated %}
+      <a href="{% url 'register' %}" class="btn btn-outline btn-lg" style="border-color:white; color:white;">Get Started</a>
+    {% endif %}
+  </div>
+</div>
+
+<div class="stats-grid mb-3">
+  <div class="stat-card">
+    <div class="stat-icon">📦</div>
+    <div class="stat-value">{{ total_products }}</div>
+    <div class="stat-label">Products Available</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">🛒</div>
+    <div class="stat-value">{{ total_orders }}</div>
+    <div class="stat-label">Orders Placed</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">⭐</div>
+    <div class="stat-value">{{ recent_reviews|length }}</div>
+    <div class="stat-label">Recent Reviews</div>
+  </div>
+</div>
+
+<div class="section-title">Featured Products</div>
+{% if products %}
+<div class="grid-4 mb-3">
+  {% for product in products %}
+  <div class="product-card">
+    {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-img">
+    {% else %}
+      <div class="product-img-placeholder">🛍️</div>
+    {% endif %}
+    <div class="product-body">
+      <div class="product-name">{{ product.product_name }}</div>
+      <div class="product-desc">{{ product.description|truncatewords:15 }}</div>
+      <div class="product-price">৳{{ product.price }}</div>
+      <div class="product-stock {% if product.is_in_stock %}in-stock{% else %}out-of-stock{% endif %}">
+        {% if product.is_in_stock %}✓ In Stock ({{ product.stock }}){% else %}✗ Out of Stock{% endif %}
+      </div>
+    </div>
+    <div class="product-footer">
+      <a href="{% url 'product_detail' product.pk %}" class="btn btn-primary btn-sm" style="flex:1;">View Details</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<div class="text-center">
+  <a href="{% url 'product_list' %}" class="btn btn-outline">View All Products →</a>
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-state-icon">🛍️</div>
+  <h3>No products yet</h3>
+  <p>Check back soon!</p>
+</div>
+{% endif %}
+
+{% if recent_reviews %}
+<div class="section-title mt-3">Recent Reviews</div>
+<div class="grid-2">
+  {% for review in recent_reviews %}
+  <div class="review-card">
+    <div class="review-header">
+      <div>
+        <div class="reviewer-name">{{ review.user.get_full_name|default:review.user.username }}</div>
+        <div class="stars">
+          {% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}<span class="star-empty">★</span>{% endif %}{% endfor %}
+        </div>
+      </div>
+      <div class="review-date">{{ review.review_date|date:"M d, Y" }}</div>
+    </div>
+    <p style="color:var(--secondary); font-size:0.9rem;">{{ review.comment|truncatewords:20 }}</p>
+    <div class="mt-1"><small><a href="{% url 'product_detail' review.product.pk %}">{{ review.product.product_name }}</a></small></div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Budget - ShopBD{% endblock %}
+{% block content %}
+<div class="mb-2"><a href="{% url 'budget_dashboard' %}" style="color:var(--secondary);">← Back to Dashboard</a></div>
+<div class="form-container">
+  <h1 class="form-title">{{ action }} Budget Record</h1>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}{% for error in field.errors %}<div class="form-error">{{ error }}</div>{% endfor %}{% endif %}
+      </div>
+    {% endfor %}
+    <div class="alert alert-info">Profit = Income − Expense (auto-calculated on save)</div>
+    <div class="flex gap-1 mt-2">
+      <button type="submit" class="btn btn-primary" style="flex:1; padding:0.75rem;">Save Record</button>
+      <a href="{% url 'budget_dashboard' %}" class="btn btn-secondary" style="flex:1; padding:0.75rem; text-align:center;">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

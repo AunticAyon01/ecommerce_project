@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Login - ShopBD{% endblock %}
+{% block content %}
+<div class="form-container">
+  <h1 class="form-title">Welcome Back</h1>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          {% for error in field.errors %}
+            <div class="form-error">{{ error }}</div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary" style="width:100%; padding:0.75rem;">Login</button>
+  </form>
+  <div class="divider"></div>
+  <p class="text-center" style="color:var(--secondary); font-size:0.9rem;">
+    Don't have an account? <a href="{% url 'register' %}">Register here</a>
+  </p>
+</div>
+{% endblock %}
